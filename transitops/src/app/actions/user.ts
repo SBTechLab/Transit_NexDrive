@@ -41,7 +41,7 @@ export async function createUserAction({
     await sendEmail({
       to: user.email,
       subject: 'Welcome to TransitOps - Account Created',
-      html: getNewUserTemplate(user.name, user.email, tempPassword, loginUrl)
+      html: getNewUserTemplate(loginUrl, tempPassword)
     })
 
     return { success: true, data: user }

@@ -3,9 +3,106 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                  String    @id @default(uuid())
+  name                String
+  email               String    @unique
+  passwordHash        String
+  role                Role
+  createdAt           DateTime  @default(now())
+  resetToken          String?
+  resetTokenExpiry    DateTime?
+  forcePasswordChange Boolean   @default(false)
+}
+
+model Vehicle {
+  id                 String           @id @default(uuid())
+  registrationNumber String           @unique
+  name               String
+  type               VehicleType
+  maxLoadCapacityKg  Float
+  odometerKm         Float            @default(0)
+  acquisitionCost    Float
+  status             VehicleStatus    @default(AVAILABLE)
+  region             String
+  createdAt          DateTime         @default(now())
+  expenses           Expense[]
+  fuelLogs           FuelLog[]
+  maintenanceLogs    MaintenanceLog[]
+  trips              Trip[]
+}
+
+model Driver {
+  id                      String       @id @default(uuid())
+  name                    String
+  email                   String       @unique
+  licenseNumber           String       @unique
+  licenseCategory         String
+  licenseExpiryDate       DateTime
+  contactNumber           String
+  safetyScore             Float        @default(100)
+  status                  DriverStatus @default(AVAILABLE)
+  createdAt               DateTime     @default(now())
+  lastLicenseReminderDays Int?
+  trips                   Trip[]
+}
+
+model Trip {
+  id                 String     @id @default(uuid())
+  source             String
+  destination        String
+  cargoWeightKg      Float
+  plannedDistanceKm  Float
+  actualDistanceKm   Float?
+  fuelConsumedLiters Float?
+  status             TripStatus @default(DRAFT)
+  revenue            Float?
+  createdAt          DateTime   @default(now())
+  dispatchedAt       DateTime?
+  completedAt        DateTime?
+  vehicleId          String
+  driverId           String
+  fuelLogs           FuelLog[]
+  driver             Driver     @relation(fields: [driverId], references: [id])
+  vehicle            Vehicle    @relation(fields: [vehicleId], references: [id])
+}
+
+model MaintenanceLog {
+  id          String            @id @default(uuid())
+  description String
+  cost        Float
+  startDate   DateTime          @default(now())
+  endDate     DateTime?
+  status      MaintenanceStatus @default(OPEN)
+  createdAt   DateTime          @default(now())
+  vehicleId   String
+  vehicle     Vehicle           @relation(fields: [vehicleId], references: [id])
+}
+
+model FuelLog {
+  id        String   @id @default(uuid())
+  liters    Float
+  cost      Float
+  date      DateTime @default(now())
+  vehicleId String
+  tripId    String?
+  trip      Trip?    @relation(fields: [tripId], references: [id])
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+}
+
+model Expense {
+  id        String      @id @default(uuid())
+  type      ExpenseType
+  amount    Float
+  date      DateTime    @default(now())
+  notes     String?
+  vehicleId String
+  vehicle   Vehicle     @relation(fields: [vehicleId], references: [id])
 }
 
 enum Role {
@@ -53,107 +150,4 @@ enum ExpenseType {
   TOLL
   MAINTENANCE
   OTHER
-}
-
-model User {
-  id                  String    @id @default(uuid())
-  name                String
-  email               String    @unique
-  passwordHash        String
-  role                Role
-  createdAt           DateTime  @default(now())
-  resetToken          String?
-  resetTokenExpiry    DateTime?
-  forcePasswordChange Boolean   @default(false)
-}
-
-model Vehicle {
-  id                 String          @id @default(uuid())
-  registrationNumber String          @unique
-  name               String
-  type               VehicleType
-  maxLoadCapacityKg  Float
-  odometerKm         Float           @default(0)
-  acquisitionCost    Float
-  status             VehicleStatus   @default(AVAILABLE)
-  region             String
-  createdAt          DateTime        @default(now())
-  
-  trips              Trip[]
-  maintenanceLogs    MaintenanceLog[]
-  fuelLogs           FuelLog[]
-  expenses           Expense[]
-}
-
-model Driver {
-  id                      String       @id @default(uuid())
-  name                    String
-  email                   String       @unique
-  licenseNumber           String       @unique
-  licenseCategory         String
-  licenseExpiryDate       DateTime
-  contactNumber           String
-  safetyScore             Float        @default(100)
-  status                  DriverStatus @default(AVAILABLE)
-  createdAt               DateTime     @default(now())
-  lastLicenseReminderDays Int?
-
-  trips              Trip[]
-}
-
-model Trip {
-  id                 String       @id @default(uuid())
-  source             String
-  destination        String
-  cargoWeightKg      Float
-  plannedDistanceKm  Float
-  actualDistanceKm   Float?
-  fuelConsumedLiters Float?
-  status             TripStatus   @default(DRAFT)
-  revenue            Float?
-  createdAt          DateTime     @default(now())
-  dispatchedAt       DateTime?
-  completedAt        DateTime?
-
-  vehicleId          String
-  vehicle            Vehicle      @relation(fields: [vehicleId], references: [id])
-  driverId           String
-  driver             Driver       @relation(fields: [driverId], references: [id])
-  fuelLogs           FuelLog[]
-}
-
-model MaintenanceLog {
-  id          String            @id @default(uuid())
-  description String
-  cost        Float
-  startDate   DateTime          @default(now())
-  endDate     DateTime?
-  status      MaintenanceStatus @default(OPEN)
-  createdAt   DateTime          @default(now())
-
-  vehicleId   String
-  vehicle     Vehicle           @relation(fields: [vehicleId], references: [id])
-}
-
-model FuelLog {
-  id        String   @id @default(uuid())
-  liters    Float
-  cost      Float
-  date      DateTime @default(now())
-
-  vehicleId String
-  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
-  tripId    String?
-  trip      Trip?    @relation(fields: [tripId], references: [id])
-}
-
-model Expense {
-  id        String      @id @default(uuid())
-  type      ExpenseType
-  amount    Float
-  date      DateTime    @default(now())
-  notes     String?
-
-  vehicleId String
-  vehicle   Vehicle     @relation(fields: [vehicleId], references: [id])
 }

@@ -39,8 +39,22 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ req, token }) => {
+        const pathname = req.nextUrl.pathname
+        if (
+          pathname.startsWith('/api/auth') ||
+          pathname === '/login' ||
+          pathname === '/forgot-password' ||
+          pathname === '/reset-password'
+        ) {
+          return true
+        }
+        return !!token
+      },
     },
+    pages: {
+      signIn: '/login',
+    }
   }
 )
 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { sendEmail } from '@/lib/mail'
-import { getLicenseExpiryTemplate } from '@/lib/email-templates'
+import { getLicenseExpiringTemplate } from '@/lib/email-templates'
 import { differenceInDays } from 'date-fns'
 
 export async function GET(request: Request) {
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
         await sendEmail({
           to: driver.email,
           subject: `Urgent: License Expiring in ${daysUntilExpiry} Days - TransitOps`,
-          html: getLicenseExpiryTemplate(driver.name, daysUntilExpiry, driver.licenseExpiryDate)
+          html: getLicenseExpiringTemplate(driver.name, daysUntilExpiry)
         })
 
         await prisma.driver.update({
