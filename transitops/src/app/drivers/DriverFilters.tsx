@@ -1,14 +1,11 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { VehicleType, VehicleStatus } from '@prisma/client'
+import { DriverStatus } from '@prisma/client'
 import { Search } from 'lucide-react'
 
-export function VehicleFilters({ regions, currentType, currentStatus, currentRegion, currentSearch, currentSort }: {
-  regions: string[]
-  currentType?: string
+export function DriverFilters({ currentStatus, currentSearch, currentSort }: {
   currentStatus?: string
-  currentRegion?: string
   currentSearch?: string
   currentSort?: string
 }) {
@@ -19,7 +16,7 @@ export function VehicleFilters({ regions, currentType, currentStatus, currentReg
     const params = new URLSearchParams(searchParams.toString())
     if (value) params.set(key, value)
     else params.delete(key)
-    router.push(`/vehicles?${params.toString()}`)
+    router.push(`/drivers?${params.toString()}`)
   }
 
   const selectClass = "h-9 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 text-sm text-gray-700 dark:text-slate-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
@@ -30,33 +27,25 @@ export function VehicleFilters({ regions, currentType, currentStatus, currentReg
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
         <input
           type="text"
-          placeholder="Search vehicles..."
+          placeholder="Search drivers..."
           defaultValue={currentSearch ?? ''}
           onChange={e => update('search', e.target.value)}
           className="h-9 pl-8 pr-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-gray-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <select className={selectClass} value={currentType ?? ''} onChange={e => update('type', e.target.value)}>
-        <option value="">All Types</option>
-        {Object.values(VehicleType).map(t => <option key={t} value={t}>{t.replace('_', ' ')}</option>)}
-      </select>
       <select className={selectClass} value={currentStatus ?? ''} onChange={e => update('status', e.target.value)}>
         <option value="">All Statuses</option>
-        {Object.values(VehicleStatus).map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
-      </select>
-      <select className={selectClass} value={currentRegion ?? ''} onChange={e => update('region', e.target.value)}>
-        <option value="">All Regions</option>
-        {regions.map(r => <option key={r} value={r}>{r}</option>)}
+        {Object.values(DriverStatus).map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
       </select>
       <select className={selectClass} value={currentSort ?? ''} onChange={e => update('sort', e.target.value)}>
         <option value="">Sort: Default</option>
-        <option value="registrationNumber">Sort: Reg. No.</option>
         <option value="name">Sort: Name</option>
-        <option value="odometerKm">Sort: Odometer</option>
+        <option value="safetyScore">Sort: Safety Score</option>
+        <option value="licenseExpiryDate">Sort: License Expiry</option>
         <option value="status">Sort: Status</option>
       </select>
-      {(currentType || currentStatus || currentRegion || currentSearch) && (
-        <button onClick={() => router.push('/vehicles')} className="h-9 px-3 rounded-xl text-sm text-red-500 border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 transition-colors">Clear</button>
+      {(currentStatus || currentSearch) && (
+        <button onClick={() => router.push('/drivers')} className="h-9 px-3 rounded-xl text-sm text-red-500 border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 transition-colors">Clear</button>
       )}
     </div>
   )
