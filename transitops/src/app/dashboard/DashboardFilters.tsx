@@ -19,11 +19,11 @@ export function DashboardFilters({ regions, currentType, currentStatus, currentR
     router.push(`/dashboard?${params.toString()}`)
   }
 
-  const selectClass = "h-9 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+  const selectClass = "h-9 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 text-sm text-gray-700 dark:text-slate-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <span className="text-sm font-medium text-gray-500">Filter by:</span>
+      <span className="text-sm font-medium text-gray-500 dark:text-slate-400">Filter by:</span>
       <select className={selectClass} value={currentType ?? ''} onChange={e => update('type', e.target.value)}>
         <option value="">All Types</option>
         {Object.values(VehicleType).map(t => <option key={t} value={t}>{t.replace('_', ' ')}</option>)}
@@ -37,7 +37,7 @@ export function DashboardFilters({ regions, currentType, currentStatus, currentR
         {regions.map(r => <option key={r} value={r}>{r}</option>)}
       </select>
       {(currentType || currentStatus || currentRegion) && (
-        <button onClick={() => router.push('/dashboard')} className="h-9 px-3 rounded-xl text-sm text-red-500 border border-red-200 bg-red-50 hover:bg-red-100 transition-colors">
+        <button onClick={() => router.push('/dashboard')} className="h-9 px-3 rounded-xl text-sm text-red-500 border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 transition-colors">
           Clear filters
         </button>
       )}
