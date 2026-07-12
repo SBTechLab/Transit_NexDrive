@@ -35,6 +35,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
+          forcePasswordChange: user.forcePasswordChange,
         }
       },
     }),
@@ -44,13 +45,15 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id
         token.role = user.role
+        token.forcePasswordChange = user.forcePasswordChange
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
+        session.user.id = token.id
+        session.user.role = token.role
+        session.user.forcePasswordChange = token.forcePasswordChange
       }
       return session
     },

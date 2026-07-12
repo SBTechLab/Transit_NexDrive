@@ -56,12 +56,15 @@ enum ExpenseType {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  name         String
-  email        String   @unique
-  passwordHash String
-  role         Role
-  createdAt    DateTime @default(now())
+  id                  String    @id @default(uuid())
+  name                String
+  email               String    @unique
+  passwordHash        String
+  role                Role
+  createdAt           DateTime  @default(now())
+  resetToken          String?
+  resetTokenExpiry    DateTime?
+  forcePasswordChange Boolean   @default(false)
 }
 
 model Vehicle {
@@ -83,15 +86,17 @@ model Vehicle {
 }
 
 model Driver {
-  id                 String       @id @default(uuid())
-  name               String
-  licenseNumber      String       @unique
-  licenseCategory    String
-  licenseExpiryDate  DateTime
-  contactNumber      String
-  safetyScore        Float        @default(100)
-  status             DriverStatus @default(AVAILABLE)
-  createdAt          DateTime     @default(now())
+  id                      String       @id @default(uuid())
+  name                    String
+  email                   String       @unique
+  licenseNumber           String       @unique
+  licenseCategory         String
+  licenseExpiryDate       DateTime
+  contactNumber           String
+  safetyScore             Float        @default(100)
+  status                  DriverStatus @default(AVAILABLE)
+  createdAt               DateTime     @default(now())
+  lastLicenseReminderDays Int?
 
   trips              Trip[]
 }

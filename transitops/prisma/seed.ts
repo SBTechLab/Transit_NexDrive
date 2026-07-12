@@ -96,14 +96,14 @@ async function main() {
   lastMonth.setMonth(lastMonth.getMonth() - 1)
 
   const drivers = [
-    { name: 'John Doe', licenseNumber: 'LIC-001', licenseCategory: 'C', licenseExpiryDate: nextYear, contactNumber: '555-0101', safetyScore: 95, status: DriverStatus.AVAILABLE },
-    { name: 'Jane Smith', licenseNumber: 'LIC-002', licenseCategory: 'C', licenseExpiryDate: nextYear, contactNumber: '555-0102', safetyScore: 98, status: DriverStatus.ON_TRIP },
-    { name: 'Mike Johnson', licenseNumber: 'LIC-003', licenseCategory: 'D', licenseExpiryDate: lastMonth, contactNumber: '555-0103', safetyScore: 85, status: DriverStatus.AVAILABLE }, // Expired
-    { name: 'Sarah Williams', licenseNumber: 'LIC-004', licenseCategory: 'C', licenseExpiryDate: nextYear, contactNumber: '555-0104', safetyScore: 70, status: DriverStatus.SUSPENDED },
-    { name: 'Tom Brown', licenseNumber: 'LIC-005', licenseCategory: 'C', licenseExpiryDate: nextYear, contactNumber: '555-0105', safetyScore: 92, status: DriverStatus.OFF_DUTY },
-    { name: 'Emily Davis', licenseNumber: 'LIC-006', licenseCategory: 'B', licenseExpiryDate: nextYear, contactNumber: '555-0106', safetyScore: 100, status: DriverStatus.AVAILABLE },
-    { name: 'Alex Demo', licenseNumber: 'LIC-007', licenseCategory: 'C', licenseExpiryDate: nextYear, contactNumber: '555-0107', safetyScore: 100, status: DriverStatus.AVAILABLE },
-    { name: 'Chris Wilson', licenseNumber: 'LIC-008', licenseCategory: 'D', licenseExpiryDate: nextYear, contactNumber: '555-0108', safetyScore: 88, status: DriverStatus.AVAILABLE },
+    { name: 'John Doe', email: 'john@transitops.com', licenseNumber: 'LIC-001', licenseCategory: 'C', licenseExpiryDate: nextYear, contactNumber: '555-0101', safetyScore: 95, status: DriverStatus.AVAILABLE },
+    { name: 'Jane Smith', email: 'jane@transitops.com', licenseNumber: 'LIC-002', licenseCategory: 'C', licenseExpiryDate: nextYear, contactNumber: '555-0102', safetyScore: 98, status: DriverStatus.ON_TRIP },
+    { name: 'Mike Johnson', email: 'mike@transitops.com', licenseNumber: 'LIC-003', licenseCategory: 'D', licenseExpiryDate: lastMonth, contactNumber: '555-0103', safetyScore: 85, status: DriverStatus.AVAILABLE }, // Expired
+    { name: 'Sarah Williams', email: 'sarah@transitops.com', licenseNumber: 'LIC-004', licenseCategory: 'C', licenseExpiryDate: nextYear, contactNumber: '555-0104', safetyScore: 70, status: DriverStatus.SUSPENDED },
+    { name: 'Tom Brown', email: 'tom@transitops.com', licenseNumber: 'LIC-005', licenseCategory: 'C', licenseExpiryDate: nextYear, contactNumber: '555-0105', safetyScore: 92, status: DriverStatus.OFF_DUTY },
+    { name: 'Emily Davis', email: 'emily@transitops.com', licenseNumber: 'LIC-006', licenseCategory: 'B', licenseExpiryDate: nextYear, contactNumber: '555-0106', safetyScore: 100, status: DriverStatus.AVAILABLE },
+    { name: 'Alex Demo', email: 'alex@transitops.com', licenseNumber: 'LIC-007', licenseCategory: 'C', licenseExpiryDate: nextYear, contactNumber: '555-0107', safetyScore: 100, status: DriverStatus.AVAILABLE },
+    { name: 'Chris Wilson', email: 'chris@transitops.com', licenseNumber: 'LIC-008', licenseCategory: 'D', licenseExpiryDate: nextYear, contactNumber: '555-0108', safetyScore: 88, status: DriverStatus.AVAILABLE },
   ]
 
   const createdDrivers = []

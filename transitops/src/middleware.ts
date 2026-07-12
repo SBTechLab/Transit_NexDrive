@@ -8,12 +8,21 @@ export default withAuth(
     const { token } = req.nextauth
     const pathname = req.nextUrl.pathname
 
-    if (pathname.startsWith('/api/auth') || pathname === '/login') {
+    if (pathname.startsWith('/api/auth') || pathname === '/login' || pathname === '/forgot-password' || pathname === '/reset-password') {
       return NextResponse.next()
     }
 
     if (!token) {
       return NextResponse.redirect(new URL('/login', req.url))
+    }
+
+    // Force password change check
+    if (token.forcePasswordChange && pathname !== '/change-password' && !pathname.startsWith('/api/')) {
+      return NextResponse.redirect(new URL('/change-password', req.url))
+    }
+
+    if (pathname === '/change-password') {
+      return NextResponse.next()
     }
 
     // Role-Based Access Control logic

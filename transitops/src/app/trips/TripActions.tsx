@@ -42,7 +42,7 @@ export function TripActions({ tripId, status }: { tripId: string, status: string
     }
   }
 
-  if (status === TripStatus.SCHEDULED) {
+  if (status === TripStatus.DRAFT) {
     return (
       <div className="flex space-x-2">
         <Button size="sm" onClick={handleDispatch} disabled={loading}>
@@ -55,7 +55,7 @@ export function TripActions({ tripId, status }: { tripId: string, status: string
     )
   }
 
-  if (status === TripStatus.IN_PROGRESS) {
+  if (status === TripStatus.DISPATCHED) {
     return (
       <div className="flex space-x-2">
         <Button size="sm" variant="secondary" onClick={handleComplete} disabled={loading}>

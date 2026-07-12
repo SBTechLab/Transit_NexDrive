@@ -46,7 +46,6 @@ export default async function FuelExpensesPage() {
                     <TableHead>Vehicle</TableHead>
                     <TableHead>Volume (L)</TableHead>
                     <TableHead>Cost ($)</TableHead>
-                    <TableHead>Odometer</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -54,14 +53,13 @@ export default async function FuelExpensesPage() {
                     <TableRow key={log.id}>
                       <TableCell>{new Date(log.date).toLocaleDateString()}</TableCell>
                       <TableCell>{log.vehicle.registrationNumber}</TableCell>
-                      <TableCell>{log.volumeLiters.toFixed(2)}</TableCell>
+                      <TableCell>{log.liters.toFixed(2)}</TableCell>
                       <TableCell>${log.cost.toFixed(2)}</TableCell>
-                      <TableCell>{log.odometerReading.toLocaleString()} km</TableCell>
                     </TableRow>
                   ))}
                   {fuelLogs.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
+                      <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
                         No fuel logs found.
                       </TableCell>
                     </TableRow>
@@ -82,8 +80,8 @@ export default async function FuelExpensesPage() {
                   <TableRow>
                     <TableHead>Date</TableHead>
                     <TableHead>Vehicle</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Description</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Notes</TableHead>
                     <TableHead>Amount ($)</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -92,8 +90,8 @@ export default async function FuelExpensesPage() {
                     <TableRow key={expense.id}>
                       <TableCell>{new Date(expense.date).toLocaleDateString()}</TableCell>
                       <TableCell>{expense.vehicle.registrationNumber}</TableCell>
-                      <TableCell>{expense.category}</TableCell>
-                      <TableCell>{expense.description}</TableCell>
+                      <TableCell>{expense.type}</TableCell>
+                      <TableCell>{expense.notes}</TableCell>
                       <TableCell>${expense.amount.toFixed(2)}</TableCell>
                     </TableRow>
                   ))}

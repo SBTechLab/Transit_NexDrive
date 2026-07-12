@@ -26,11 +26,12 @@ export function AddDriverButton() {
     const formData = new FormData(e.currentTarget)
     
     const payload = {
-      firstName: formData.get('firstName') as string,
-      lastName: formData.get('lastName') as string,
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
       licenseNumber: formData.get('licenseNumber') as string,
+      licenseCategory: formData.get('licenseCategory') as string,
       licenseExpiryDate: new Date(formData.get('licenseExpiryDate') as string),
-      experienceYears: parseInt(formData.get('experienceYears') as string, 10),
+      contactNumber: formData.get('contactNumber') as string,
       status: DriverStatus.AVAILABLE,
     }
 
@@ -59,24 +60,28 @@ export function AddDriverButton() {
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" name="firstName" required />
+              <Label htmlFor="name">Full Name</Label>
+              <Input id="name" name="name" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" name="lastName" required />
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" type="email" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="licenseNumber">License Number</Label>
               <Input id="licenseNumber" name="licenseNumber" required />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="licenseCategory">License Category</Label>
+              <Input id="licenseCategory" name="licenseCategory" required />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="licenseExpiryDate">License Expiry</Label>
               <Input id="licenseExpiryDate" name="licenseExpiryDate" type="date" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="experienceYears">Experience (Years)</Label>
-              <Input id="experienceYears" name="experienceYears" type="number" required />
+              <Label htmlFor="contactNumber">Contact Number</Label>
+              <Input id="contactNumber" name="contactNumber" required />
             </div>
           </div>
           <div className="flex justify-end pt-4">

@@ -28,11 +28,11 @@ export function AddTripButton({ vehicles, drivers }: { vehicles: Vehicle[], driv
     const payload = {
       vehicleId: formData.get('vehicleId') as string,
       driverId: formData.get('driverId') as string,
-      origin: formData.get('origin') as string,
+      source: formData.get('source') as string,
       destination: formData.get('destination') as string,
-      startDate: new Date(formData.get('startDate') as string),
-      estimatedDistanceKm: parseInt(formData.get('estimatedDistanceKm') as string, 10),
-      status: TripStatus.SCHEDULED,
+      cargoWeightKg: parseFloat(formData.get('cargoWeightKg') as string),
+      plannedDistanceKm: parseFloat(formData.get('plannedDistanceKm') as string),
+      status: TripStatus.DRAFT,
     }
 
     const res = await createTripAction(payload)
@@ -83,25 +83,25 @@ export function AddTripButton({ vehicles, drivers }: { vehicles: Vehicle[], driv
               >
                 <option value="">Select a driver</option>
                 {drivers.map(d => (
-                  <option key={d.id} value={d.id}>{d.firstName} {d.lastName}</option>
+                  <option key={d.id} value={d.id}>{d.name}</option>
                 ))}
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="origin">Origin</Label>
-              <Input id="origin" name="origin" required />
+              <Label htmlFor="source">Source</Label>
+              <Input id="source" name="source" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="destination">Destination</Label>
               <Input id="destination" name="destination" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date/Time</Label>
-              <Input id="startDate" name="startDate" type="datetime-local" required />
+              <Label htmlFor="cargoWeightKg">Cargo Weight (kg)</Label>
+              <Input id="cargoWeightKg" name="cargoWeightKg" type="number" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="estimatedDistanceKm">Est. Distance (km)</Label>
-              <Input id="estimatedDistanceKm" name="estimatedDistanceKm" type="number" required />
+              <Label htmlFor="plannedDistanceKm">Planned Distance (km)</Label>
+              <Input id="plannedDistanceKm" name="plannedDistanceKm" type="number" required />
             </div>
           </div>
           <div className="flex justify-end pt-4">

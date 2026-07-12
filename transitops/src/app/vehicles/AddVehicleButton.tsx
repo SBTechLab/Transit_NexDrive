@@ -27,11 +27,11 @@ export function AddVehicleButton() {
     
     const payload = {
       registrationNumber: formData.get('registrationNumber') as string,
-      make: formData.get('make') as string,
-      model: formData.get('model') as string,
-      year: parseInt(formData.get('year') as string, 10),
+      name: formData.get('name') as string,
       type: formData.get('type') as VehicleType,
-      capacity: parseInt(formData.get('capacity') as string, 10),
+      maxLoadCapacityKg: parseFloat(formData.get('maxLoadCapacityKg') as string),
+      acquisitionCost: parseFloat(formData.get('acquisitionCost') as string),
+      region: formData.get('region') as string,
       status: VehicleStatus.AVAILABLE,
     }
 
@@ -77,20 +77,20 @@ export function AddVehicleButton() {
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="make">Make</Label>
-              <Input id="make" name="make" required />
+              <Label htmlFor="name">Vehicle Name</Label>
+              <Input id="name" name="name" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="model">Model</Label>
-              <Input id="model" name="model" required />
+              <Label htmlFor="maxLoadCapacityKg">Max Load Capacity (Kg)</Label>
+              <Input id="maxLoadCapacityKg" name="maxLoadCapacityKg" type="number" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="year">Year</Label>
-              <Input id="year" name="year" type="number" required />
+              <Label htmlFor="acquisitionCost">Acquisition Cost</Label>
+              <Input id="acquisitionCost" name="acquisitionCost" type="number" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="capacity">Capacity</Label>
-              <Input id="capacity" name="capacity" type="number" required />
+              <Label htmlFor="region">Region</Label>
+              <Input id="region" name="region" required />
             </div>
           </div>
           <div className="flex justify-end pt-4">

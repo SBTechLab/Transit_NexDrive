@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
-import { TripStatus, VehicleStatus, DriverStatus } from '@prisma/client'
+import { TripStatus, VehicleStatus, DriverStatus, Role } from '@prisma/client'
+import { sendEmail } from '@/lib/mail'
+import { getTripDispatchedTemplate, getTripCompletedTemplate, getTripCancelledTemplate } from '@/lib/email-templates'
 
 export async function dispatchTrip(tripId: string) {
   return prisma.$transaction(async (tx) => {
@@ -48,13 +50,45 @@ export async function dispatchTrip(tripId: string) {
       data: { status: DriverStatus.ON_TRIP }
     })
 
-    return tx.trip.update({
+    const dispatchedTrip = await tx.trip.update({
       where: { id: tripId },
       data: {
         status: TripStatus.DISPATCHED,
         dispatchedAt: new Date()
       }
     })
+
+    // Email notifications
+    // 1. Email Driver
+    sendEmail({
+      to: trip.driver.email,
+      subject: `Trip Dispatched: #${tripId}`,
+      html: getTripDispatchedTemplate({
+        id: tripId,
+        source: trip.source,
+        destination: trip.destination,
+        cargoWeightKg: trip.cargoWeightKg
+      })
+    })
+
+    // 2. Email Fleet Managers
+    tx.user.findMany({ where: { role: Role.FLEET_MANAGER } }).then(managers => {
+      const managerEmails = managers.map(m => m.email)
+      if (managerEmails.length > 0) {
+        sendEmail({
+          to: managerEmails,
+          subject: `Trip Dispatched: #${tripId}`,
+          html: getTripDispatchedTemplate({
+            id: tripId,
+            source: trip.source,
+            destination: trip.destination,
+            cargoWeightKg: trip.cargoWeightKg
+          })
+        })
+      }
+    })
+
+    return dispatchedTrip
   })
 }
 
@@ -84,7 +118,7 @@ export async function completeTrip(tripId: string, actualDistanceKm: number, fue
       data: { status: DriverStatus.AVAILABLE }
     })
 
-    return tx.trip.update({
+    const completedTrip = await tx.trip.update({
       where: { id: tripId },
       data: {
         status: TripStatus.COMPLETED,
@@ -93,6 +127,27 @@ export async function completeTrip(tripId: string, actualDistanceKm: number, fue
         completedAt: new Date()
       }
     })
+
+    // Email Fleet Managers
+    tx.user.findMany({ where: { role: Role.FLEET_MANAGER } }).then(managers => {
+      const managerEmails = managers.map(m => m.email)
+      if (managerEmails.length > 0) {
+        // compute mock cost (e.g., $1.5/liter + driver base)
+        const cost = (fuelConsumedLiters * 1.5)
+        sendEmail({
+          to: managerEmails,
+          subject: `Trip Completed: #${tripId}`,
+          html: getTripCompletedTemplate({
+            id: tripId,
+            distance: actualDistanceKm,
+            fuel: fuelConsumedLiters,
+            cost
+          })
+        })
+      }
+    })
+
+    return completedTrip
   })
 }
 
@@ -118,9 +173,29 @@ export async function cancelTrip(tripId: string) {
       })
     }
 
-    return tx.trip.update({
+    const cancelledTrip = await tx.trip.update({
       where: { id: tripId },
       data: { status: TripStatus.CANCELLED }
     })
+
+    // Email Driver and Fleet Managers
+    sendEmail({
+      to: trip.driver.email,
+      subject: `Trip Cancelled: #${tripId}`,
+      html: getTripCancelledTemplate(tripId)
+    })
+
+    tx.user.findMany({ where: { role: Role.FLEET_MANAGER } }).then(managers => {
+      const managerEmails = managers.map(m => m.email)
+      if (managerEmails.length > 0) {
+        sendEmail({
+          to: managerEmails,
+          subject: `Trip Cancelled: #${tripId}`,
+          html: getTripCancelledTemplate(tripId)
+        })
+      }
+    })
+
+    return cancelledTrip
   })
 }

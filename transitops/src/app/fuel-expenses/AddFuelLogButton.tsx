@@ -28,9 +28,8 @@ export function AddFuelLogButton({ vehicles }: { vehicles: Vehicle[] }) {
     const payload = {
       vehicleId: formData.get('vehicleId') as string,
       date: new Date(formData.get('date') as string),
-      volumeLiters: parseFloat(formData.get('volumeLiters') as string),
+      liters: parseFloat(formData.get('liters') as string),
       cost: parseFloat(formData.get('cost') as string),
-      odometerReading: parseInt(formData.get('odometerReading') as string, 10),
     }
 
     const res = await addFuelLogAction(payload)
@@ -76,16 +75,12 @@ export function AddFuelLogButton({ vehicles }: { vehicles: Vehicle[] }) {
               <Input id="date" name="date" type="datetime-local" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="volumeLiters">Volume (Liters)</Label>
-              <Input id="volumeLiters" name="volumeLiters" type="number" step="0.01" required />
+              <Label htmlFor="liters">Volume (Liters)</Label>
+              <Input id="liters" name="liters" type="number" step="0.01" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="cost">Total Cost ($)</Label>
               <Input id="cost" name="cost" type="number" step="0.01" required />
-            </div>
-            <div className="space-y-2 col-span-2">
-              <Label htmlFor="odometerReading">Odometer Reading (km)</Label>
-              <Input id="odometerReading" name="odometerReading" type="number" required />
             </div>
           </div>
           <div className="flex justify-end pt-4">

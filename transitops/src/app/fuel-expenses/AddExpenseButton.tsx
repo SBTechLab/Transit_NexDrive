@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { addExpenseAction } from '@/app/actions/expenses'
 import { toast } from 'sonner'
-import { Vehicle } from '@prisma/client'
+import { Vehicle, ExpenseType } from '@prisma/client'
 
 export function AddExpenseButton({ vehicles }: { vehicles: Vehicle[] }) {
   const [open, setOpen] = useState(false)
@@ -28,9 +28,9 @@ export function AddExpenseButton({ vehicles }: { vehicles: Vehicle[] }) {
     const payload = {
       vehicleId: formData.get('vehicleId') as string,
       date: new Date(formData.get('date') as string),
-      category: formData.get('category') as string,
+      type: formData.get('type') as ExpenseType,
       amount: parseFloat(formData.get('amount') as string),
-      description: formData.get('description') as string,
+      notes: formData.get('notes') as string,
     }
 
     const res = await addExpenseAction(payload)
@@ -76,16 +76,25 @@ export function AddExpenseButton({ vehicles }: { vehicles: Vehicle[] }) {
               <Input id="date" name="date" type="datetime-local" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
-              <Input id="category" name="category" placeholder="e.g. Tolls, Cleaning, Oil" required />
+              <Label htmlFor="type">Expense Type</Label>
+              <select 
+                id="type" 
+                name="type" 
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                required
+              >
+                <option value="TOLL">Toll</option>
+                <option value="MAINTENANCE">Maintenance</option>
+                <option value="OTHER">Other</option>
+              </select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="amount">Amount ($)</Label>
               <Input id="amount" name="amount" type="number" step="0.01" required />
             </div>
             <div className="space-y-2 col-span-2">
-              <Label htmlFor="description">Description</Label>
-              <Input id="description" name="description" required />
+              <Label htmlFor="notes">Notes</Label>
+              <Input id="notes" name="notes" required />
             </div>
           </div>
           <div className="flex justify-end pt-4">

@@ -31,9 +31,11 @@ export default async function VehiclesPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Registration No.</TableHead>
-                <TableHead>Make & Model</TableHead>
+                <TableHead>Name</TableHead>
                 <TableHead>Type</TableHead>
-                <TableHead>Capacity</TableHead>
+                <TableHead>Capacity (kg)</TableHead>
+                <TableHead>Odometer</TableHead>
+                <TableHead>Region</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
@@ -41,9 +43,11 @@ export default async function VehiclesPage() {
               {vehicles.map((vehicle) => (
                 <TableRow key={vehicle.id}>
                   <TableCell className="font-medium">{vehicle.registrationNumber}</TableCell>
-                  <TableCell>{vehicle.make} {vehicle.model}</TableCell>
+                  <TableCell>{vehicle.name}</TableCell>
                   <TableCell>{vehicle.type}</TableCell>
-                  <TableCell>{vehicle.capacity} {vehicle.type === 'BUS' ? 'passengers' : 'kg'}</TableCell>
+                  <TableCell>{vehicle.maxLoadCapacityKg}</TableCell>
+                  <TableCell>{vehicle.odometerKm} km</TableCell>
+                  <TableCell>{vehicle.region}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className={statusColors[vehicle.status] || ''}>
                       {vehicle.status.replace('_', ' ')}
@@ -53,7 +57,7 @@ export default async function VehiclesPage() {
               ))}
               {vehicles.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
+                  <TableCell colSpan={7} className="text-center text-muted-foreground py-6">
                     No vehicles found.
                   </TableCell>
                 </TableRow>

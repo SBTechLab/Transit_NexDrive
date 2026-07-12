@@ -10,8 +10,8 @@ import { getEligibleVehicles } from '@/services/vehicleService'
 import { getEligibleDrivers } from '@/services/driverService'
 
 const statusColors: Record<string, string> = {
-  [TripStatus.SCHEDULED]: 'bg-gray-100 text-gray-800',
-  [TripStatus.IN_PROGRESS]: 'bg-blue-100 text-blue-800',
+  [TripStatus.DRAFT]: 'bg-gray-100 text-gray-800',
+  [TripStatus.DISPATCHED]: 'bg-blue-100 text-blue-800',
   [TripStatus.COMPLETED]: 'bg-green-100 text-green-800',
   [TripStatus.CANCELLED]: 'bg-red-100 text-red-800',
 }
@@ -47,7 +47,7 @@ export default async function TripsPage() {
                 <TableHead>Route</TableHead>
                 <TableHead>Vehicle</TableHead>
                 <TableHead>Driver</TableHead>
-                <TableHead>Start Date</TableHead>
+                <TableHead>Created</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -56,11 +56,11 @@ export default async function TripsPage() {
               {trips.map((trip) => (
                 <TableRow key={trip.id}>
                   <TableCell className="font-medium">
-                    {trip.origin} → {trip.destination}
+                    {trip.source} → {trip.destination}
                   </TableCell>
                   <TableCell>{trip.vehicle.registrationNumber}</TableCell>
-                  <TableCell>{trip.driver.firstName} {trip.driver.lastName}</TableCell>
-                  <TableCell>{new Date(trip.startDate).toLocaleString()}</TableCell>
+                  <TableCell>{trip.driver.name}</TableCell>
+                  <TableCell>{new Date(trip.createdAt).toLocaleString()}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className={statusColors[trip.status] || ''}>
                       {trip.status.replace('_', ' ')}

@@ -31,23 +31,27 @@ export default async function DriversPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>License No.</TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead>License Expiry</TableHead>
-                <TableHead>Experience (Yrs)</TableHead>
+                <TableHead>Contact</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {drivers.map((driver) => (
                 <TableRow key={driver.id}>
-                  <TableCell className="font-medium">{driver.firstName} {driver.lastName}</TableCell>
+                  <TableCell className="font-medium">{driver.name}</TableCell>
+                  <TableCell>{driver.email}</TableCell>
                   <TableCell>{driver.licenseNumber}</TableCell>
+                  <TableCell>{driver.licenseCategory}</TableCell>
                   <TableCell>
                     <span className={new Date(driver.licenseExpiryDate) < new Date() ? "text-destructive font-bold" : ""}>
                       {new Date(driver.licenseExpiryDate).toLocaleDateString()}
                     </span>
                   </TableCell>
-                  <TableCell>{driver.experienceYears}</TableCell>
+                  <TableCell>{driver.contactNumber}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className={statusColors[driver.status] || ''}>
                       {driver.status.replace('_', ' ')}
@@ -57,7 +61,7 @@ export default async function DriversPage() {
               ))}
               {drivers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
+                  <TableCell colSpan={7} className="text-center text-muted-foreground py-6">
                     No drivers found.
                   </TableCell>
                 </TableRow>

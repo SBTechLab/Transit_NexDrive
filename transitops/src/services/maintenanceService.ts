@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
-import { MaintenanceStatus, VehicleStatus } from '@prisma/client'
+import { MaintenanceStatus, VehicleStatus, Role } from '@prisma/client'
+import { sendEmail } from '@/lib/mail'
+import { getMaintenanceOpenedTemplate, getMaintenanceClosedTemplate } from '@/lib/email-templates'
 
 export async function openMaintenance(vehicleId: string, description: string, cost: number) {
   return prisma.$transaction(async (tx) => {
@@ -16,7 +18,7 @@ export async function openMaintenance(vehicleId: string, description: string, co
       data: { status: VehicleStatus.IN_SHOP }
     })
 
-    return tx.maintenanceLog.create({
+    const log = await tx.maintenanceLog.create({
       data: {
         vehicleId,
         description,
@@ -24,6 +26,19 @@ export async function openMaintenance(vehicleId: string, description: string, co
         status: MaintenanceStatus.OPEN
       }
     })
+
+    tx.user.findMany({ where: { role: Role.FLEET_MANAGER } }).then(managers => {
+      const managerEmails = managers.map(m => m.email)
+      if (managerEmails.length > 0) {
+        sendEmail({
+          to: managerEmails,
+          subject: `Vehicle In Shop: ${vehicle.registrationNumber}`,
+          html: getMaintenanceOpenedTemplate(vehicle.registrationNumber)
+        })
+      }
+    })
+
+    return log
   })
 }
 
@@ -47,12 +62,25 @@ export async function closeMaintenance(maintenanceId: string) {
       data: { status: newVehicleStatus }
     })
 
-    return tx.maintenanceLog.update({
+    const closedLog = await tx.maintenanceLog.update({
       where: { id: maintenanceId },
       data: {
         status: MaintenanceStatus.CLOSED,
         endDate: new Date()
       }
     })
+
+    tx.user.findMany({ where: { role: Role.FLEET_MANAGER } }).then(managers => {
+      const managerEmails = managers.map(m => m.email)
+      if (managerEmails.length > 0) {
+        sendEmail({
+          to: managerEmails,
+          subject: `Vehicle Available: ${log.vehicle.registrationNumber}`,
+          html: getMaintenanceClosedTemplate(log.vehicle.registrationNumber)
+        })
+      }
+    })
+
+    return closedLog
   })
 }

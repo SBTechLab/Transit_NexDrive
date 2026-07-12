@@ -11,7 +11,7 @@ export default async function DashboardPage() {
     pendingMaintenance,
   ] = await Promise.all([
     prisma.vehicle.count(),
-    prisma.trip.count({ where: { status: TripStatus.IN_PROGRESS } }),
+    prisma.trip.count({ where: { status: TripStatus.DISPATCHED } }),
     prisma.vehicle.count({ where: { status: VehicleStatus.IN_SHOP } }),
     prisma.maintenanceLog.count({ where: { status: 'OPEN' } }),
   ])
