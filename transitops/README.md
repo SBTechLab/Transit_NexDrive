@@ -1,48 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TransitOps — Smart Fleet Management System
+
+A full-stack fleet management platform built with **Next.js 16**, **Prisma**, **PostgreSQL (Supabase)**, and **Tailwind CSS**.
+
+## Features
+
+- **Authentication & RBAC** — Secure login with role-based access (Fleet Manager, Driver, Safety Officer, Financial Analyst)
+- **Dashboard** — Real-time KPIs: Active Vehicles, Available Vehicles, Fleet Utilization %, Active Trips, Pending Trips, Drivers On Duty
+- **Vehicle Registry** — Full CRUD with filters by type, status, region and sort support
+- **Driver Management** — Driver profiles with safety score, license expiry alerts, suspend/reinstate
+- **Trip Management** — Full lifecycle: Draft → Dispatched → Completed / Cancelled with business rule validation
+- **Maintenance** — Maintenance logs with automatic vehicle status transitions (IN_SHOP ↔ AVAILABLE)
+- **Fuel & Expenses** — Fuel logs and expense tracking per vehicle
+- **Reports & Analytics** — Fuel Efficiency, Fleet Utilization, Operational Cost, Vehicle ROI with CSV & PDF export
+- **Dark Mode** — Full dark/light theme toggle with beautiful color palette
+- **Search, Filter & Sort** — Available on all major pages
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript |
+| Database | PostgreSQL via Supabase |
+| ORM | Prisma |
+| Auth | NextAuth.js v4 |
+| Styling | Tailwind CSS v4 |
+| UI Components | Radix UI + shadcn/ui |
+| Charts | Recharts |
+| Email | Nodemailer |
+
+## Business Rules Enforced
+
+- Vehicle registration number must be unique
+- Retired or In Shop vehicles never appear in dispatch selection
+- Drivers with expired licenses or Suspended status cannot be assigned
+- A driver or vehicle already On Trip cannot be assigned to another trip
+- Cargo weight must not exceed vehicle max load capacity
+- Dispatching a trip automatically sets vehicle and driver to On Trip
+- Completing a trip restores both to Available and updates odometer
+- Cancelling a dispatched trip restores vehicle and driver to Available
+- Opening maintenance automatically sets vehicle to In Shop
+- Closing maintenance restores vehicle to Available
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+cd transitops
+npm install --legacy-peer-deps
+
+# Setup environment
+cp .env.example .env
+# Fill in DATABASE_URL, DIRECT_URL, NEXTAUTH_SECRET, SMTP credentials
+
+# Push schema and seed database
+npx prisma db push
+npx prisma db seed
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Default Login Credentials
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Role | Email | Password |
+|------|-------|----------|
+| Fleet Manager | manager1@transitops.com | password123 |
+| Safety Officer | safety@transitops.com | password123 |
+| Financial Analyst | finance@transitops.com | password123 |
+| Driver | driver@transitops.com | password123 |
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+transitops/
+├── prisma/              # Schema and seed
+├── src/
+│   ├── app/             # Next.js App Router pages
+│   │   ├── dashboard/
+│   │   ├── vehicles/
+│   │   ├── drivers/
+│   │   ├── trips/
+│   │   ├── maintenance/
+│   │   ├── fuel-expenses/
+│   │   └── reports/
+│   ├── components/      # Reusable UI components
+│   ├── lib/             # Prisma client, auth, mail, utils
+│   ├── services/        # Business logic layer
+│   └── types/           # TypeScript type definitions
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Cron Jobs
-
-TransitOps includes background jobs (cron jobs) for automated processes.
-
-### License Expiry Check
-**Endpoint**: `GET /api/cron/license-check`
-
-This endpoint checks all active drivers for impending driver's license expirations and sends warning emails.
-- **Triggers**: Exactly at 30, 15, and 7 days prior to the `licenseExpiryDate`.
-- **Idempotency**: Safely callable multiple times per day; emails will only be sent once per trigger window per driver.
-- **Setup**: In a production environment, set up a cron job (using Vercel Cron, AWS EventBridge, etc.) to hit `https://your-domain.com/api/cron/license-check` at least once a day (e.g. at 08:00 AM UTC).
+MIT
