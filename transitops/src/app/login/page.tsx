@@ -72,7 +72,7 @@ export default function LoginPage() {
 
           {/* Demo accounts */}
           <div className="mt-6 pt-5 border-t border-gray-100">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Demo Accounts — password: <span className="text-blue-600">pass123</span></p>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Quick Login — password: <span className="text-blue-600">pass123</span></p>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { label: 'Fleet Manager', email: 'sbbhalani11@gmail.com', color: 'bg-blue-50 text-blue-700 hover:bg-blue-100' },
