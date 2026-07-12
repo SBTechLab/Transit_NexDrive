@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { VehicleStatus, TripStatus, DriverStatus, VehicleType } from '@prisma/client'
 import { Truck, Map, Wrench, Users, CheckCircle, TrendingUp, Fuel, Clock, Activity } from 'lucide-react'
 import { DashboardFilters } from './DashboardFilters'
+import { DashboardAutoRefresh } from './DashboardAutoRefresh'
 
 export default async function DashboardPage({
   searchParams,
@@ -63,6 +64,7 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-8">
+      <DashboardAutoRefresh />
       {/* Hero Banner */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 p-8 text-white shadow-xl">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #3b82f6 0%, transparent 50%), radial-gradient(circle at 80% 20%, #8b5cf6 0%, transparent 40%)' }} />

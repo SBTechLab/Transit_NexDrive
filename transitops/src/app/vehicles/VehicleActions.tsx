@@ -1,17 +1,21 @@
 'use client'
 
 import { useState } from 'react'
-import { Vehicle, VehicleType, VehicleStatus } from '@prisma/client'
+import { Vehicle, VehicleDocument, VehicleType, VehicleStatus } from '@prisma/client'
 import { updateVehicleAction, retireVehicleAction } from '@/app/actions/vehicle'
 import { toast } from 'sonner'
-import { Pencil, Archive } from 'lucide-react'
+import { Pencil, Archive, FileText } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { VehicleDocuments } from './VehicleDocuments'
 
-export function VehicleActions({ vehicle }: { vehicle: Vehicle }) {
+type VehicleWithDocs = Vehicle & { documents: VehicleDocument[] }
+
+export function VehicleActions({ vehicle }: { vehicle: VehicleWithDocs }) {
   const [editOpen, setEditOpen] = useState(false)
+  const [docsOpen, setDocsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const handleEdit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,12 +50,22 @@ export function VehicleActions({ vehicle }: { vehicle: Vehicle }) {
         <button onClick={() => setEditOpen(true)} className="h-8 w-8 rounded-lg bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition-colors" title="Edit">
           <Pencil className="h-3.5 w-3.5 text-blue-600" />
         </button>
+        <button onClick={() => setDocsOpen(true)} className="h-8 w-8 rounded-lg bg-violet-50 hover:bg-violet-100 flex items-center justify-center transition-colors" title="Documents">
+          <FileText className="h-3.5 w-3.5 text-violet-600" />
+        </button>
         {vehicle.status !== VehicleStatus.RETIRED && (
           <button onClick={handleRetire} className="h-8 w-8 rounded-lg bg-gray-50 hover:bg-red-50 flex items-center justify-center transition-colors" title="Retire">
             <Archive className="h-3.5 w-3.5 text-gray-500 hover:text-red-500" />
           </button>
         )}
       </div>
+
+      <Dialog open={docsOpen} onOpenChange={setDocsOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Documents — {vehicle.registrationNumber}</DialogTitle></DialogHeader>
+          <VehicleDocuments vehicleId={vehicle.id} documents={vehicle.documents} />
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>

@@ -41,11 +41,16 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id
         token.role = user.role
         token.forcePasswordChange = user.forcePasswordChange
+      }
+      // Re-read from DB when session is updated (e.g. after change-password)
+      if (trigger === 'update' && token.id) {
+        const dbUser = await prisma.user.findUnique({ where: { id: token.id as string }, select: { forcePasswordChange: true } })
+        if (dbUser) token.forcePasswordChange = dbUser.forcePasswordChange
       }
       return token
     },
